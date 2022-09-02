@@ -12,15 +12,16 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/.games")
-public class GamesController {
+public class GameRestController {
 
     private final GameService gameService;
 
-    public GamesController(final GameService gameService) {
+    public GameRestController(final GameService gameService) {
         this.gameService = gameService;
     }
 
@@ -36,7 +37,7 @@ public class GamesController {
 
     @PostMapping("/add")
     public void createGame(@RequestParam(name = "isPublic", required = false, defaultValue = "false") final boolean isPublic, @RequestParam(name = "aiSpeed", required = false, defaultValue = "INSTANT") final AISpeed aiSpeed, @RequestParam(name = "useExtension", required = false, defaultValue = "false") final boolean useExtension, @RequestParam(name = "handle") final String handle, HttpServletRequest request, HttpServletResponse response) {
-        Player player = new Player(UUID.randomUUID().toString(), handle, true);
+        Player player = new Player(UUID.randomUUID().toString(), handle, true, true);
         Game game = new Game(UUID.randomUUID().toString(), useExtension, isPublic, player, aiSpeed);
         gameService.addGame(game);
         try {
@@ -52,10 +53,11 @@ public class GamesController {
         final HttpSession session = request.getSession();
         final String playerHandle = (String) session.getAttribute("playerHandle");
         final Game game = gameService.getGameById(id);
-        if (StringUtils.isNotBlank(playerHandle) && game.hasPlayerWithHandle(playerHandle)) {
+        Optional<Player> playerWithHandle = game.getPlayerWithHandle(playerHandle);
+        if (StringUtils.isNotBlank(playerHandle) && playerWithHandle.isPresent()) {
             response.sendRedirect(String.format("/game?id=%s", game.getId()));
         }
-        final Player player = new Player(UUID.randomUUID().toString(), handle, true);
+        final Player player = new Player(UUID.randomUUID().toString(), handle, true, false);
         boolean couldAdd = game.addPlayer(player);
         if (!couldAdd) {
             response.sendRedirect(String.format("/game/join?id=%s&errorMsg=%s", game.getId(), "Could not add User, game is full or handle already exists"));
@@ -63,6 +65,15 @@ public class GamesController {
             session.setAttribute("playerHandle", handle);
             response.sendRedirect(String.format("/game?id=%s", game.getId()));
         }
+    }
+
+    @GetMapping("/started")
+    public boolean hasStarted(@RequestParam(name = "id") final String id, @RequestParam(name = "handle") final String handle, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        final HttpSession session = request.getSession();
+        final String playerHandle = (String) session.getAttribute("playerHandle");
+        final Game game = gameService.getGameById(id);
+        Optional<Player> playerWithHandle = game.getPlayerWithHandle(playerHandle);
+        return StringUtils.isNotBlank(playerHandle) && playerWithHandle.isPresent() && game.getHasStarted();
     }
 
 }
