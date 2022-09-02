@@ -4,7 +4,6 @@ import dev.comparesheriff.wildwestcards.models.Game;
 import dev.comparesheriff.wildwestcards.services.GameService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,11 +13,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import java.util.List;
 
 @Controller
-public class IndexController extends AbstractWebController{
-    private final Logger LOG = LoggerFactory.getLogger(IndexController.class);
+public class IndexWebController extends AbstractWebController{
+    private final Logger LOG = LoggerFactory.getLogger(IndexWebController.class);
     private final GameService gameService;
 
-    public IndexController(GameService gameService) {
+    public IndexWebController(GameService gameService) {
         this.gameService = gameService;
     }
 

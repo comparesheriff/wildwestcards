@@ -3,16 +3,19 @@ package dev.comparesheriff.wildwestcards.models;
 public class Player {
     private final String id;
     private final String handle;
-    private final boolean isHuman;
+    private final boolean human;
 
-    public Player(final String id, final String handle, final boolean isHuman) {
+    private final boolean host;
+
+    public Player(final String id, final String handle, final boolean human, final boolean host) {
         this.id = id;
         this.handle = handle;
-        this.isHuman = isHuman;
+        this.human = human;
+        this.host = host;
     }
 
     public boolean isHuman() {
-        return isHuman;
+        return human;
     }
 
     public String getHandle() {
@@ -21,5 +24,9 @@ public class Player {
 
     public String getId() {
         return id;
+    }
+
+    public boolean isHost() {
+        return host;
     }
 }

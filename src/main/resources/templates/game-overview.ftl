@@ -1,5 +1,7 @@
 <div class="content container">
 
+    <h1>HELLO ${model.player.handle!""}<#if model.player.host!false> - HOST</#if></h1>
+
     <p><i>Game Overview</i></p>
     <p>ID: ${model.game.id}</p>
     <p>Extension: ${model.game.extension?c}</p>
@@ -14,5 +16,9 @@
     <p>Started: ${model.game.hasStarted?c}</p>
     <p>Public: ${model.game.showPublic?c}</p>
 
-
+    <#if ((model.player.host)!false) && ((model.game.canStart())!false)>
+        <a href="/game/start?id=${model.game.id!""}" class="btn-primary">
+            START GAME!
+        </a>
+    </#if>
 </div>
