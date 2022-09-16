@@ -16,6 +16,16 @@
     <p>Started: ${model.game.hasStarted?c}</p>
     <p>Public: ${model.game.showPublic?c}</p>
 
+    <button class="btn-primary" onclick="copyGameLink('${model.link!}')">Copy Join Game Link</button>
+
+    <script>
+        function copyGameLink(link) {
+            if (link) {
+                navigator.clipboard.writeText(link);
+                alert("Join Link Copied To Clipboard");
+            }
+        }
+    </script>
     <#if ((model.player.host)!false) && ((model.game.canStart())!false)>
         <a href="/game/start?id=${model.game.id!""}" class="btn-primary">
             START GAME!
