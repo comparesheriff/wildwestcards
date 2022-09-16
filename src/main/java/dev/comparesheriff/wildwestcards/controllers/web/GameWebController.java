@@ -35,6 +35,8 @@ public class GameWebController extends AbstractWebController {
         }
         model.addAttribute("player", playerWithHandle.get());
         model.addAttribute("game", gameById);
+        String url = "http://localhost:8081/game/join?id="+id;
+        model.addAttribute("link", url);
         return getPage("game-overview", model);
     }
 
